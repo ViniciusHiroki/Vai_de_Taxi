@@ -32,11 +32,11 @@ export async function finalizarCorrida(CorId, Tipo) {
         return updateMot
     }
     if(Tipo != 'cancelado'){
-        let updateCli = await executarQuery(`UPDATE tblCliente SET CliQtdViagens = ${selectCor.resultadoQuery[0].CliQtdViagens + 1} WHERE UsuId = ${selectCor.resultadoQuery[0].CliId}`)
+        let updateCli = await executarQuery(`UPDATE tblCliente SET CliQtdViagens = ${selectCor.resultadoQuery[0].CliQtdViagens + 1} WHERE CliId = ${selectCor.resultadoQuery[0].CliId}`)
         if(!updateCli.status){
             return updateCli
         }
-        let updateMot = await executarQuery(`UPDATE tblMotorista SET MotQtdViagens = ${selectCor.resultadoQuery[0].MotQtdViagens + 1} WHERE UsuId = ${selectCor.resultadoQuery[0].MotId}`)
+        let updateMot = await executarQuery(`UPDATE tblMotorista SET MotQtdViagens = ${selectCor.resultadoQuery[0].MotQtdViagens + 1} WHERE MotId = ${selectCor.resultadoQuery[0].MotId}`)
         if(!updateMot.status){
             return updateMot
         }

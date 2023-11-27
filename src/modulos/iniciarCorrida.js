@@ -10,6 +10,14 @@ export async function iniciarCorrida(CliId, MotId, CorOrigem, CorDestino) {
         return selectMot
     }
 
+    //verificar duplicidade de usuário
+    if(selectCli.resultadoQuery[0].UsuId == selectMot.resultadoQuery[0].UsuId){
+        return{
+            status: false,
+            msg: `Cliente e motorista são o mesmo usuário, não é possível realizar a corrida!`
+        }
+    }
+
     //verificar se já está em corrida
     if(selectCli.resultadoQuery[0].UsuEmCorrida != 0){
         return{
@@ -40,8 +48,27 @@ export async function iniciarCorrida(CliId, MotId, CorOrigem, CorDestino) {
         return corrida
     }
 
+    //select ultimo Id inserido
+    let ultimoId = await executarSelect('SELECT * FROM tblCorrida ORDER BY CorId DESC LIMIT 1')
+    if(!ultimoId.status){
+        return ultimoId
+    }
+
     return {
         status: true,
-        msg: 'A corrida está em andamento'
+        msg: 'A corrida está em andamento',
+        info: {
+            CorId: ultimoId.resultadoQuery[0].CorId,
+            dadosCliente: {
+                Nome: selectCli.resultadoQuery[0].UsuNome,
+                Idade: selectCli.resultadoQuery[0].UsuIdade,
+                CPF: selectCli.resultadoQuery[0].UsuCpf
+            },
+            dadosMotorista: {
+                Nome: selectMot.resultadoQuery[0].UsuNome,
+                Idade: selectMot.resultadoQuery[0].UsuIdade,
+                CPF: selectMot.resultadoQuery[0].UsuCpf
+            }
+        }
     }
 }
